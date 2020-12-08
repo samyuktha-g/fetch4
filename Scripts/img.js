@@ -5,10 +5,11 @@ class imagefetching {
         request.responseType = 'blob';
         console.log("request: ", request);
         // When the request loads, check whether it was successful
+
         request.onload = function() {
             if (request.status === 200) {
-                // If successful, resolve the promise by passing back the request response
-                //resolve(request.response);
+                console.log("success");
+
             } else {
                 // If it fails, reject the promise with a error message
                 reject(new Error('Image didn\'t load successfully; error code:' + request.statusText));
@@ -25,10 +26,7 @@ class imagefetching {
         request.send();
 
         console.log("response2: ", request.response);
-        var img = document.createElement('img');
-        img.src = "https://images.unsplash.com/photo-1556629538-fc3eba61504e?auto=format&fit=crop&w=1300&q=80";
-        document.getElementById('here').appendChild(img);
-        // down.innerHTML = "Image Element Added.";
+
 
         // calling Indexdb funcion to store the image file in indexeddb.
         imagefetching.indexedDB(request);
@@ -38,18 +36,32 @@ class imagefetching {
             console.log(" your browser doesnt support indexDB");
             // return;
         }
+
         const databaseName = "imageDB";
+        const storeName = 'store0';
         const DBname = window.indexedDB.open(databaseName);
         DBname.onupgradeneeded = () => {
-            let db = DBname.result;
-            let store = db.createObjectStore("img", { autoIncrement: true });
-            // let store = db.createObjectStore("Files", { autoIncrement: true });
-            let index = store.createIndex("filename", "fileeName", { unique: false });
-            console.log("index; ", index);
-            // put method
-            console.log("req: ", req.response);
-            store.add(req.response);
-        }
+                console.log("In indexed DB code: ");
+                let db = DBname.result;
+                let store = db.createObjectStore("img", { autoIncrement: true });
+
+                console.log("store: ", store, "db: ", db);
+                // let store = db.createObjectStore("Files", { autoIncrement: true });
+                let index = store.createIndex("filename", "fileeName", { unique: false });
+                console.log("index; ", index);
+                // put method
+                console.log("req: ", req.response);
+                store.add(req.response);
+                // let blob = req.response;
+                let myImage = new Image();
+                let bloburl = URL.createObjectURL(req.response);
+                myImage.src = bloburl;
+                document.getElementById('here').appendChild(myImage);
+                console.log("bloburl: ", bloburl);
+
+
+            }
+            // console.log("items: ", items);
     }
 
 }
