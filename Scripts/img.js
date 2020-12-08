@@ -53,6 +53,7 @@ class imagefetching {
                 console.log("req: ", req.response);
                 store.add(req.response);
                 // let blob = req.response;
+            //below returns the image and displays the image above buttons
                 let myImage = new Image();
                 let bloburl = URL.createObjectURL(req.response);
                 myImage.src = bloburl;
